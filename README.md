@@ -29,6 +29,46 @@ mvn spring-boot:run
 API: http://localhost:8080
 H2 Console: http://localhost:8080/h2-console
 
+## Profiles and Environments
+
+- `application.properties` → base settings
+- `application-development.properties` → PostgreSQL development
+- `application-production.properties` → PostgreSQL production
+- `application-test.properties` (src/test/resources) → H2 for tests
+
+Active profile controlled by environment variable:
+
+```bash
+ENVIRONMENT=development
+```
+
+Use:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=development
+```
+
+or set variable in `.env`:
+
+```bash
+ENVIRONMENT=development
+```
+
+## Docker usage
+
+A Docker setup is included:
+- `Dockerfile`
+- `docker-compose.yml` (app + PostgreSQL)
+
+Run:
+
+```bash
+docker-compose up --build
+```
+
+App: http://localhost:8080
+DB: postgres://localhost:${DATABASE_PORT}/${DATABASE_NAME}
+
 ---
 
 ## Main Endpoints
@@ -90,7 +130,6 @@ exception/    → error handling
 This project demonstrates backend fundamentals:
 
 * REST API design
-* Clean architecture
 * Data validation
 * Error handling
 * Basic analytics
