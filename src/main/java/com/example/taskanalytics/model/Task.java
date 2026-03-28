@@ -3,7 +3,7 @@ package com.example.taskanalytics.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Min;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,7 +37,7 @@ public class Task {
     private LocalDateTime completedAt;
 
     @Column
-    @Positive
+    @Min(0)
     private Integer timeSpentMinutes;
 
     public Long getId() { return id; }

@@ -1,21 +1,39 @@
 package com.example.taskanalytics.repository;
 
+import com.example.taskanalytics.dto.StatusCount;
 import com.example.taskanalytics.model.Task;
+import com.example.taskanalytics.model.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
+import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @Query("SELECT COUNT(t) FROM Task t WHERE t.status = com.example.taskanalytics.model.TaskStatus.DONE")
-    long countCompletedTasks();
+    long countByStatus(TaskStatus status);
 
-    @Query("SELECT t.status as status, COUNT(t) as count FROM Task t GROUP BY t.status")
-    Map<String, Long> countTasksByStatus();
+    default long countCompletedTasks() {
+        return countByStatus(TaskStatus.DONE);
+    }
 
-    @Query("SELECT AVG(t.timeSpentMinutes) FROM Task t WHERE t.status = com.example.taskanalytics.model.TaskStatus.DONE AND t.timeSpentMinutes IS NOT NULL")
-    Double averageTimeSpent();
+    @Query("""
+        SELECT new com.example.taskanalytics.dto.StatusCount(t.status, COUNT(t))
+        FROM Task t
+        GROUP BY t.status
+    """)
+    List<StatusCount> countTasksByStatus();
+
+    @Query("""
+        SELECT AVG(t.timeSpentMinutes)
+        FROM Task t
+        WHERE t.status = :status
+          AND t.timeSpentMinutes IS NOT NULL
+    """)
+    Double averageTimeSpentByStatus(TaskStatus status);
+
+    default Double averageTimeSpent() {
+        return averageTimeSpentByStatus(TaskStatus.DONE);
+    }
 }
