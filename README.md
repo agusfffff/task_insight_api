@@ -1,250 +1,98 @@
 # Task Analytics API
 
-A production-ready REST API for task management built with Spring Boot, Spring Data JPA, and H2 database.
+REST API for task management built with Spring Boot and JPA.
 
 ## Features
 
-✅ **Arquitectura en Capas**: Controller → Service → Repository → Entity
-✅ **DTOs**: Separación clara entre API y modelo interno
-✅ **Validaciones**: @NotNull, @NotBlank, @Size en DTOs
-✅ **Manejo Global de Errores**: @ControllerAdvice para respuestas consistentes
-✅ **Enums para Status**: Type-safe status management
-✅ **JPA Auditing**: Timestamps automáticos
-✅ **CRUD Completo**: Create, Read, Update, Delete
-✅ **Endpoints de Estadísticas**: Stats agregadas
+* Layered architecture (Controller → Service → Repository)
+* DTOs for request/response separation
+* Bean Validation (@NotBlank, @Size, etc.)
+* Global exception handling (@ControllerAdvice)
+* Enum-based status (type-safe)
+* JPA Auditing (automatic timestamps)
+* CRUD operations + statistics endpoints
 
-## Requirements
+## Tech Stack
 
-- Java 17
-- Maven 3.8+
+* Java 17
+* Spring Boot
+* Spring Data JPA
+* H2 Database
+* Maven
 
-## Running the Application
+## Run
 
-1. Navigate to the project directory
-2. Run: `mvn spring-boot:run`
-3. The API will be available at `http://localhost:8080`
-
-H2 Console: `http://localhost:8080/h2-console` (usuario: sa, sin contraseña)
-
-## API Endpoints
-
-### CRUD Operations
-
-#### Create Task
-```http
-POST /tasks
-Content-Type: application/json
-
-{
-  "title": "Implement authentication",
-  "description": "Add JWT authentication to the API"
-}
+```bash
+mvn spring-boot:run
 ```
 
-**Response (201):**
-```json
-{
-  "id": 1,
-  "title": "Implement authentication",
-  "description": "Add JWT authentication to the API",
-  "status": "TODO",
-  "createdAt": "2026-03-27T10:30:00",
-  "completedAt": null,
-  "timeSpentMinutes": null
-}
-```
+API: http://localhost:8080
+H2 Console: http://localhost:8080/h2-console
 
-#### Get All Tasks
-```http
-GET /tasks
-```
+---
 
-**Response (200):**
-```json
-[
-  {
-    "id": 1,
-    "title": "Task 1",
-    "description": "Description",
-    "status": "TODO",
-    "createdAt": "2026-03-27T10:30:00",
-    "completedAt": null,
-    "timeSpentMinutes": null
-  }
-]
-```
+## Main Endpoints
 
-#### Get Task by ID
-```http
-GET /tasks/{id}
-```
+### Tasks
 
-**Response (200):**
-```json
-{
-  "id": 1,
-  "title": "Task 1",
-  "description": "Description",
-  "status": "TODO",
-  "createdAt": "2026-03-27T10:30:00",
-  "completedAt": null,
-  "timeSpentMinutes": null
-}
-```
+* `POST /tasks` → create task
+* `GET /tasks` → list tasks
+* `GET /tasks/{id}` → get by id
+* `PUT /tasks/{id}` → update
+* `DELETE /tasks/{id}` → delete
 
-#### Update Task
-```http
-PUT /tasks/{id}
-Content-Type: application/json
+### Stats
 
-{
-  "title": "Updated title",
-  "description": "Updated description",
-  "status": "IN_PROGRESS",
-  "timeSpentMinutes": null
-}
-```
+* `GET /tasks/stats/completed`
+* `GET /tasks/stats/by-status`
+* `GET /tasks/stats/avg-time`
 
-**Response (200):**
-```json
-{
-  "id": 1,
-  "title": "Updated title",
-  "description": "Updated description",
-  "status": "IN_PROGRESS",
-  "createdAt": "2026-03-27T10:30:00",
-  "completedAt": null,
-  "timeSpentMinutes": 0
-}
-```
-
-#### Delete Task
-```http
-DELETE /tasks/{id}
-```
-
-**Response: 204 No Content**
-
-### Statistics Endpoints
-
-#### Completed Tasks Count
-```http
-GET /tasks/stats/completed
-```
-
-**Response (200):**
-```json
-5
-```
-
-#### Tasks by Status
-```http
-GET /tasks/stats/by-status
-```
-
-**Response (200):**
-```json
-{
-  "TODO": 8,
-  "IN_PROGRESS": 3,
-  "DONE": 5
-}
-```
-
-#### Average Time Spent (completed tasks)
-```http
-GET /tasks/stats/avg-time
-```
-
-**Response (200):**
-```json
-120.5
-```
-
-## Error Handling
-
-The API returns consistent error responses:
-
-### Validation Error (400)
-```json
-{
-  "timestamp": "2026-03-27T10:35:00",
-  "status": 400,
-  "message": "Error de validación",
-  "errors": {
-    "title": "El título debe tener entre 3 y 255 caracteres",
-    "status": "El estado es requerido"
-  },
-  "path": "/tasks"
-}
-```
-
-### Not Found Error (404)
-```json
-{
-  "timestamp": "2026-03-27T10:36:00",
-  "status": 404,
-  "message": "Tarea no encontrada con id: 999",
-  "errors": null,
-  "path": "/tasks/999"
-}
-```
+---
 
 ## Data Model
 
 ```
 Task
-├── id (Long, auto-generated)
-├── title (String, required, 3-255 chars)
-├── description (String, optional, max 1000 chars)
-├── status (Enum: TODO, IN_PROGRESS, DONE)
-├── createdAt (LocalDateTime, auto-managed)
-├── completedAt (LocalDateTime, set when status → DONE)
-└── timeSpentMinutes (Integer, calculated on completion)
+- id (Long)
+- title (String)
+- description (String)
+- status (TODO | IN_PROGRESS | DONE)
+- createdAt
+- completedAt
+- timeSpentMinutes
 ```
 
-## TaskStatus Enum
+---
+
+## Structure
 
 ```
-TODO          → Nueva tarea
-IN_PROGRESS   → En desarrollo
-DONE          → Completada
+controller/   → REST endpoints
+service/      → business logic
+repository/   → data access
+model/        → entities & enums
+dto/          → API contracts
+exception/    → error handling
 ```
 
-## Project Structure
+---
 
-```
-src/main/java/com/example/taskanalytics/
-├── controller/
-│   └── TaskController.java          # REST endpoints
-├── service/
-│   └── TaskService.java             # Business logic
-├── repository/
-│   └── TaskRepository.java          # Data access
-├── model/
-│   ├── Task.java                    # Entity
-│   └── TaskStatus.java              # Enum
-├── dto/
-│   ├── TaskResponseDTO.java         # Response DTO
-│   ├── CreateTaskDTO.java           # Create request
-│   └── UpdateTaskDTO.java           # Update request
-├── exception/
-│   ├── GlobalExceptionHandler.java  # Centralized error handling
-│   ├── ResourceNotFoundException.java
-│   └── ErrorResponse.java
-└── TaskAnalyticsApiApplication.java # Main class
-```
+## Notes
 
-## Validation Rules
+* `createdAt` is automatically managed via JPA Auditing
+* `completedAt` and `timeSpentMinutes` are set when a task is marked as DONE
+* Validation errors return consistent JSON responses
 
-- **title**: Required, 3-255 characters
-- **description**: Optional, max 1000 characters
-- **status**: Required, must be TODO/IN_PROGRESS/DONE
+---
 
-## Technologies
+## Purpose
 
-- Spring Boot 3.2.0
-- Spring Data JPA
-- Jakarta Persistence API
-- H2 Database
-- Maven
+This project demonstrates backend fundamentals:
+
+* REST API design
+* Clean architecture
+* Data validation
+* Error handling
+* Basic analytics
+
+---

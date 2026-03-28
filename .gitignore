@@ -1,0 +1,33 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+
+.DS_Store
+Thumbs.db
+
+
+.idea/
+*.iml
+*.iws
+*.ipr
+
+
+.vscode/
+
+
+*.class
+
+
+.env
+
+# Generated docs (Copilot / temp)
+ARCHITECTURE.md
+IMPROVEMENTS.md
+PROJECT_STRUCTURE.md
+QUICKSTART.md
+TESTING.md
+
