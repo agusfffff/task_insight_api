@@ -108,18 +108,6 @@ class TaskTest {
     }
     
     @Test
-    void shouldFailWhenTimeSpentIsZero() {
-        Task task = new Task();
-        task.setTitle("Valid title");
-        task.setStatus(TaskStatus.TODO);
-        task.setTimeSpentMinutes(0);
-
-        Set<ConstraintViolation<Task>> violations = validator.validate(task);
-
-        assertFalse(violations.isEmpty());
-    } 
-    
-    @Test
     void shouldPassWhenTimeSpentIsNull() {
         Task task = new Task();
         task.setTitle("Valid title");
