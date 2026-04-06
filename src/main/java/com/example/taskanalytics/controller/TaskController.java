@@ -5,7 +5,6 @@ import com.example.taskanalytics.dto.TaskResponse;
 import com.example.taskanalytics.dto.TaskUpdateRequest;
 import com.example.taskanalytics.service.TaskService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +15,12 @@ import java.util.Map;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    @Autowired
     private TaskService taskService;
 
+    public TaskController(TaskService taskService) { 
+        this.taskService = taskService; 
+    }
+    
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskCreateRequest createTaskDTO) {
         TaskResponse createdTask = taskService.createTask(createTaskDTO);
