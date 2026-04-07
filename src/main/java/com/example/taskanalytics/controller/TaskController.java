@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
+import java.net.URI;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -24,7 +24,8 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskCreateRequest createTaskDTO) {
         TaskResponse createdTask = taskService.createTask(createTaskDTO);
-        return ResponseEntity.ok(createdTask);
+        String location = "/tasks/" + createdTask.id();
+        return ResponseEntity.created(URI.create(location)).body(createdTask);
     }
 
     @GetMapping
