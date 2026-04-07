@@ -87,43 +87,7 @@ DB: postgres://localhost:${DATABASE_PORT}/${DATABASE_NAME}
 * `GET /tasks/stats/by-status`
 * `GET /tasks/stats/avg-time`
 
----
 
-## Data Model
-
-```
-Task
-- id (Long)
-- title (String)
-- description (String)
-- status (TODO | IN_PROGRESS | DONE)
-- createdAt
-- completedAt
-- timeSpentMinutes
-```
-
----
-
-## Structure
-
-```
-controller/   → REST endpoints
-service/      → business logic
-repository/   → data access
-model/        → entities & enums
-dto/          → API contracts
-exception/    → error handling
-```
-
----
-
-## Notes
-
-* `createdAt` is automatically managed via JPA Auditing
-* `completedAt` and `timeSpentMinutes` are set when a task is marked as DONE
-* Validation errors return consistent JSON responses
-
----
 
 ## Purpose
 
@@ -134,4 +98,3 @@ This project demonstrates backend fundamentals:
 * Error handling
 * Basic analytics
 
----
